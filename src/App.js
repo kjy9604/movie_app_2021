@@ -1,19 +1,55 @@
 import React from "react";
-
-function Food({ fav }) {
-  return <h1>I like {fav}</h1>
-}
-
-function App() {
-  return (
-    <div>
-      <h1>hihihi</h1>
-      <Food fav="Kimchi" />
-      <Food fav="jappagetti" />
-      <Food fav="ramen" />
-      <Food fav="meets" />
-    </div>
-  );
+import axios from "axios";
+import Movie from "./Movie";
+import "./App.css";
+class App extends React.Component {
+  // --> state
+  state = {
+    isLoading: true,
+    movies: [],
+  };
+  getMovies = async () => {
+    // await : 리턴될때까지 기다림. async function에서만 사용 가능
+    const {
+      data: {
+        data: { movies },
+      },
+    } = await axios.get(
+      "https://yts-proxy.now.sh/list_movies.json?sort_by=rating"
+    );
+    this.setState({ movies, isLoading: false });
+  };
+  componentDidMount() {
+    this.getMovies();
+  }
+  render() {
+    const { isLoading, movies } = this.state;
+    return (
+      <section className="container">
+        {isLoading ? (
+          <div className="loader">
+            <span className="loader__text">Loading...</span>
+          </div>
+        ) : (
+          <div className="movies">
+            {movies.map((movie) => {
+              return (
+                <Movie
+                  key={movie.id}
+                  id={movie.id}
+                  year={movie.year}
+                  title={movie.title}
+                  summary={movie.summary}
+                  poster={movie.medium_cover_image}
+                  genres={movie.genres}
+                />
+              );
+            })}
+          </div>
+        )}
+      </section>
+    );
+  }
 }
 
 export default App;

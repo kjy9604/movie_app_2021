@@ -1,0 +1,7 @@
+{
+    "plugins": ["prettier"],
+    "extends": ["eslint:recommanded", "plugin:prettier/recommanded"],
+    "rules": {
+        "prettier/prettier": "error"
+    }
+}
